@@ -3,7 +3,7 @@ import bcrypt from "bcrypt";
 import { UserDocument, UserModel } from "./types"
 
 const UsersSchema = new Schema({
-    name: { type: String, required: true },
+    username: { type: String, required: true },
     password: { type: String, required: true },
     email: { type: String, required: true },
     avatar: {
@@ -12,6 +12,7 @@ const UsersSchema = new Schema({
             "https://cdn-icons-png.flaticon.com/512/149/149071.png",
     },
     status: { type: String, enum: ["online", "offline"], default: "offline" },
+    googleId: { type: String },
 }, { timestamps: true })
 
 // BEFORE saving the user in db, I'd like to execute the following code

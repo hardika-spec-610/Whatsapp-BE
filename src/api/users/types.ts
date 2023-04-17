@@ -1,11 +1,12 @@
 import { Model, Document } from "mongoose"
 
 interface User {
-    name: string
+    username: string
     password: string
     email: string
     avatar: string
     status: "online" | "offline"
+    googleId: string
 }
 
 export interface UserDocument extends User, Document { }
