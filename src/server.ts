@@ -10,9 +10,11 @@ import {
   notFoundHandler,
   unauthorizedHandler,
 } from "./errorHandlers";
+import passport from "passport";
+import googleStrategy from "./lib/auth/googleOauth.js";
 
 const expressServer = express();
-
+passport.use("google", googleStrategy);
 // **************************** SOCKET.IO **************************
 const httpServer = createServer(expressServer);
 const socketioServer = new Server(httpServer); // this constructor expects to receive an HTTP-SERVER as parameter (NOT AN EXPRESS SERVER!!!!!)
@@ -22,6 +24,7 @@ socketioServer.on("connection", newConnectionHandler);
 // *************************** MIDDLEWARES *************************
 expressServer.use(cors());
 expressServer.use(express.json());
+expressServer.use(passport.initialize());
 
 // *************************** ENDPOINTS ***************************
 
