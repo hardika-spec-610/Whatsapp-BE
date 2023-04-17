@@ -11,7 +11,8 @@ import {
   unauthorizedHandler,
 } from "./errorHandlers";
 import passport from "passport";
-import googleStrategy from "./lib/auth/googleOauth.js";
+import googleStrategy from "./lib/auth/googleOauth";
+import usersRouter from "./api/users/index";
 
 const expressServer = express();
 passport.use("google", googleStrategy);
@@ -27,6 +28,7 @@ expressServer.use(express.json());
 expressServer.use(passport.initialize());
 
 // *************************** ENDPOINTS ***************************
+expressServer.use("/users", usersRouter);
 
 // ************************* ERROR HANDLERS ************************
 expressServer.use(badRequestHandler);

@@ -2,7 +2,7 @@
 // import GoogleStrategy = require("passport-google-oauth20");
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 
-import { createAccessToken } from "./tools.js";
+import { createAccessToken } from "./tools";
 import UsersModel from "../../api/users/model";
 
 const googleStrategy = new GoogleStrategy(
@@ -15,6 +15,7 @@ const googleStrategy = new GoogleStrategy(
     // This function is executed when Google sends us a successfull response
     // Here we are going to receive some informations about the user from Google (scopes --> profile, email)
     try {
+      console.log(profile);
       const { email, given_name, sub } = profile._json;
       console.log("PROFILE:", profile);
       // 1. Check if the user is already in db
