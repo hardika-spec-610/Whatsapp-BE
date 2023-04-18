@@ -1,14 +1,45 @@
-import Express from "express";
+import express from "express";
 import createHttpError from "http-errors";
 import UserModel from "./model";
+import passport from "passport";
 import { JWTAuthMiddleware } from "../../lib/auth/jwt";
 import { createAccessToken } from "../../lib/auth/tools";
 import { TokenPayload } from "../../lib/auth/tools";
 import multer from "multer";
 import { CloudinaryStorage } from "multer-storage-cloudinary";
 import { v2 as cloudinary } from "cloudinary";
+import { RequestHandler, Request } from "express";
 
-const userRouter = Express.Router();
+const usersRouter = express.Router();
+interface googleRequest extends Request {
+  user?: { _id?: string; status?: "online" | "offline"; accessToken?: string };
+}
+
+const userRouter = express.Router();
+
+usersRouter.get(
+    "/googleLogin",
+    passport.authenticate("google", {
+      scope: ["profile", "email"],
+      prompt: "consent",
+    })
+  );
+  
+  usersRouter.get(
+    "/googleRedirect",
+    passport.authenticate("google", { session: false }),
+    (req: googleRequest, res, next) => {
+      try {
+        res.redirect(
+          `${process.env.FE_DEV_URL}/home?accessToken=${req.user?.accessToken}`
+        );
+      } catch (error) {
+        next(error);
+      }
+    }
+  );
+
+
 
 userRouter.post("/", async (req, res, next) => {
   try {
