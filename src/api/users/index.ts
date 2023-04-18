@@ -10,14 +10,13 @@ import { CloudinaryStorage } from "multer-storage-cloudinary";
 import { v2 as cloudinary } from "cloudinary";
 import { RequestHandler, Request } from "express";
 
-const usersRouter = express.Router();
 interface googleRequest extends Request {
   user?: { _id?: string; status?: "online" | "offline"; accessToken?: string };
 }
 
 const userRouter = express.Router();
 
-usersRouter.get(
+userRouter.get(
   "/googleLogin",
   passport.authenticate("google", {
     scope: ["profile", "email"],
@@ -25,7 +24,7 @@ usersRouter.get(
   })
 );
 
-usersRouter.get(
+userRouter.get(
   "/googleRedirect",
   passport.authenticate("google", { session: false }),
   (req: googleRequest, res, next) => {

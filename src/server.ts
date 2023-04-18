@@ -12,7 +12,7 @@ import {
 } from "./errorHandlers";
 import passport from "passport";
 import googleStrategy from "./lib/auth/googleOauth";
-import usersRouter from "./api/users/index";
+import userRouter from "./api/users/index";
 import createHttpError from "http-errors";
 
 const expressServer = express();
@@ -45,7 +45,7 @@ expressServer.use(express.json());
 expressServer.use(passport.initialize());
 
 // *************************** ENDPOINTS ***************************
-expressServer.use("/users", usersRouter);
+expressServer.use("/users", userRouter);
 
 // ************************* ERROR HANDLERS ************************
 expressServer.use(badRequestHandler);
