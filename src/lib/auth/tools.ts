@@ -3,7 +3,6 @@ import jwt from "jsonwebtoken";
 export interface TokenPayload {
   _id?: string;
   status?: "online" | "offline";
-  accessToken?: string;
 }
 
 export const createAccessToken = (payload: TokenPayload): Promise<string> =>

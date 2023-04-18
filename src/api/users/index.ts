@@ -2,9 +2,13 @@ import express from "express";
 import createHttpError from "http-errors";
 import UsersModel from "./model";
 import passport from "passport";
-import { JWTAuthMiddleware, UserRequest } from "../../lib/auth/jwt";
+import { JWTAuthMiddleware } from "../../lib/auth/jwt";
+import { RequestHandler, Request } from "express";
 
 const usersRouter = express.Router();
+interface googleRequest extends Request {
+  user?: { _id?: string; status?: "online" | "offline"; accessToken?: string };
+}
 
 usersRouter.get(
   "/googleLogin",
@@ -17,7 +21,7 @@ usersRouter.get(
 usersRouter.get(
   "/googleRedirect",
   passport.authenticate("google", { session: false }),
-  (req: UserRequest, res, next) => {
+  (req: googleRequest, res, next) => {
     try {
       res.redirect(
         `${process.env.FE_DEV_URL}?accessToken=${req.user?.accessToken}`
