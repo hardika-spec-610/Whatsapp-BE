@@ -9,9 +9,15 @@ import multer from "multer";
 import { CloudinaryStorage } from "multer-storage-cloudinary";
 import { v2 as cloudinary } from "cloudinary";
 import { RequestHandler, Request } from "express";
+import { JwtPayload } from "jsonwebtoken";
 
 interface googleRequest extends Request {
   user?: { _id?: string; status?: "online" | "offline"; accessToken?: string };
+}
+
+interface UserStatus {
+  _id: string;
+  status: string;
 }
 
 const userRouter = express.Router();
@@ -81,14 +87,16 @@ userRouter.get("/", JWTAuthMiddleware, async (req, res, next) => {
   }
 });
 
-userRouter.get("/me", JWTAuthMiddleware, async (req, res, next) => {
+userRouter.get("/me", JWTAuthMiddleware, async (req: JwtPayload, res, next) => {
   try {
-    const user = await UserModel.findById(req.body.user._id);
+    console.log("req.user:", req.user);
+    const user = await UserModel.findById(req.user?._id);
+
     if (user) {
       res.send(user);
     } else {
       res.send(
-        createHttpError(404, "Couldn't find User with id: " + req.body.user._id)
+        createHttpError(404, "Couldn't find User with id: " + req.user?._id)
       );
     }
   } catch (error) {
@@ -96,11 +104,11 @@ userRouter.get("/me", JWTAuthMiddleware, async (req, res, next) => {
   }
 });
 
-userRouter.put("/me", JWTAuthMiddleware, async (req, res, next) => {
+userRouter.put("/me", JWTAuthMiddleware, async (req: JwtPayload, res, next) => {
   try {
     const updatedUser = await UserModel.findByIdAndUpdate(
-      req.body.user._id,
-      req.body,
+      req.user?._id,
+      req.user,
       { new: true, runValidators: true }
     );
     res.send(updatedUser);
@@ -116,10 +124,11 @@ const cloudinaryUploader = multer({
       folder: "whatsApp/userImg",
     } as any,
   }),
-}).single("userImg");
+}).single("avatar");
 
 userRouter.put("/image/:userId", cloudinaryUploader, async (req, res, next) => {
   try {
+    console.log("req.file:", req.file);
     if (req.file) {
       const updatedUser = await UserModel.findByIdAndUpdate(
         req.params.userId,
@@ -139,13 +148,17 @@ userRouter.put("/image/:userId", cloudinaryUploader, async (req, res, next) => {
   }
 });
 
-userRouter.delete("/me", JWTAuthMiddleware, async (req, res, next) => {
-  try {
-    await UserModel.findOneAndDelete(req.body.user._id);
-    res.status(204).send();
-  } catch (error) {
-    next(error);
+userRouter.delete(
+  "/me",
+  JWTAuthMiddleware,
+  async (req: JwtPayload, res, next) => {
+    try {
+      await UserModel.findOneAndDelete(req.user._id);
+      res.status(204).send();
+    } catch (error) {
+      next(error);
+    }
   }
-});
+);
 
 export default userRouter;
