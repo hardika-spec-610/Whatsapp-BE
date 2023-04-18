@@ -18,28 +18,26 @@ interface googleRequest extends Request {
 const userRouter = express.Router();
 
 usersRouter.get(
-    "/googleLogin",
-    passport.authenticate("google", {
-      scope: ["profile", "email"],
-      prompt: "consent",
-    })
-  );
-  
-  usersRouter.get(
-    "/googleRedirect",
-    passport.authenticate("google", { session: false }),
-    (req: googleRequest, res, next) => {
-      try {
-        res.redirect(
-          `${process.env.FE_DEV_URL}/home?accessToken=${req.user?.accessToken}`
-        );
-      } catch (error) {
-        next(error);
-      }
+  "/googleLogin",
+  passport.authenticate("google", {
+    scope: ["profile", "email"],
+    prompt: "consent",
+  })
+);
+
+usersRouter.get(
+  "/googleRedirect",
+  passport.authenticate("google", { session: false }),
+  (req: googleRequest, res, next) => {
+    try {
+      res.redirect(
+        `${process.env.FE_DEV_URL}/home?accessToken=${req.user?.accessToken}`
+      );
+    } catch (error) {
+      next(error);
     }
-  );
-
-
+  }
+);
 
 userRouter.post("/", async (req, res, next) => {
   try {
