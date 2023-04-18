@@ -1,16 +1,23 @@
 import { Schema, model } from "mongoose";
+import { User } from '../users/types'
 
-export interface IMessage {
-    sender: string; // user ID
-    content: string;
-    // define any other message properties you need
+export interface IMessage extends Document {
+    sender: User; // user ID
+    content: {
+        text?: string;
+        media?: string;
+    };
 }
 
 const MessagesSchema = new Schema(
     {
         sender: { type: Schema.Types.ObjectId, required: true, ref: "User" },
         content: {
-            text: { type: String, required: true },
+            type: {
+                text: { type: String },
+                media: { type: String },
+            },
+            required: true,
         },
     },
     { timestamps: true })

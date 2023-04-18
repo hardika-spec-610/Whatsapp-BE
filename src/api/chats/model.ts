@@ -9,8 +9,8 @@ interface IChat extends Document {
 
 const ChatsSchema = new Schema({
     members: [{ type: Schema.Types.ObjectId, required: true, ref: 'User' }],
-    messages: [{ type: Schema.Types.ObjectId, ref: 'Message' }]
-})
+    messages: [{ type: Schema.Types.ObjectId, ref: 'Message', default: [] }]
+}, { timestamps: true })
 
 const Chats = model<IChat>('Chat', ChatsSchema)
 
