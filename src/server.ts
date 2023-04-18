@@ -13,6 +13,7 @@ import {
 import passport from "passport";
 import googleStrategy from "./lib/auth/googleOauth";
 import usersRouter from "./api/users/index";
+import createHttpError from "http-errors";
 
 const expressServer = express();
 passport.use("google", googleStrategy);
@@ -23,7 +24,23 @@ const socketioServer = new Server(httpServer); // this constructor expects to re
 socketioServer.on("connection", newConnectionHandler);
 
 // *************************** MIDDLEWARES *************************
-expressServer.use(cors());
+const whitelist = [process.env.FE_DEV_URL as string, process.env.FE_PROD_URL];
+expressServer.use(
+  cors({
+    origin: (currentOrigin, corsNext) => {
+      if (!currentOrigin || whitelist.indexOf(currentOrigin) !== -1) {
+        corsNext(null, true);
+      } else {
+        corsNext(
+          createHttpError(
+            400,
+            `Origin ${currentOrigin} is not in the whitelist!`
+          )
+        );
+      }
+    },
+  })
+);
 expressServer.use(express.json());
 expressServer.use(passport.initialize());
 
