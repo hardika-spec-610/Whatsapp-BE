@@ -132,7 +132,7 @@ userRouter.put("/image/:userId", cloudinaryUploader, async (req, res, next) => {
     if (req.file) {
       const updatedUser = await UserModel.findByIdAndUpdate(
         req.params.userId,
-        { image: req.file.path },
+        { avatar: req.file.path },
         { new: true, runValidators: true }
       );
       if (updatedUser) {
