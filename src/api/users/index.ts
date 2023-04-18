@@ -118,7 +118,7 @@ const cloudinaryUploader = multer({
   }),
 }).single("userImg");
 
-userRouter.put("/:userId/image", cloudinaryUploader, async (req, res, next) => {
+userRouter.put("/image/:userId", cloudinaryUploader, async (req, res, next) => {
   try {
     if (req.file) {
       const updatedUser = await UserModel.findByIdAndUpdate(
