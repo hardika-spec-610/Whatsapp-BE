@@ -64,7 +64,6 @@ userRouter.post("/", async (req, res, next) => {
 userRouter.post("/login", async (req, res, next) => {
   try {
     const { email, password } = req.body;
-    console.log("email:", email, "password:", password);
     const user = await UserModel.checkCredentials(email, password);
     if (user) {
       const payload: TokenPayload = { _id: user._id, status: user.status };
@@ -89,7 +88,6 @@ userRouter.get("/", JWTAuthMiddleware, async (req, res, next) => {
 
 userRouter.get("/me", JWTAuthMiddleware, async (req: JwtPayload, res, next) => {
   try {
-    console.log("req.user:", req.user);
     const user = await UserModel.findById(req.user?._id);
 
     if (user) {
@@ -106,6 +104,7 @@ userRouter.get("/me", JWTAuthMiddleware, async (req: JwtPayload, res, next) => {
 
 userRouter.put("/me", JWTAuthMiddleware, async (req: JwtPayload, res, next) => {
   try {
+    console.log("req in put/me:", req.user);
     const updatedUser = await UserModel.findByIdAndUpdate(
       req.user?._id,
       req.user,
@@ -128,7 +127,6 @@ const cloudinaryUploader = multer({
 
 userRouter.put("/image/:userId", cloudinaryUploader, async (req, res, next) => {
   try {
-    console.log("req.file:", req.file);
     if (req.file) {
       const updatedUser = await UserModel.findByIdAndUpdate(
         req.params.userId,
