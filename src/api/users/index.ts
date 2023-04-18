@@ -24,7 +24,7 @@ usersRouter.get(
   (req: googleRequest, res, next) => {
     try {
       res.redirect(
-        `${process.env.FE_DEV_URL}/home?accessToken=${req.user?.accessToken}`
+        `${process.env.FE_DEV_URL}/home?accessToken=${req.user?.accessToken}?id=${req.user?._id}`
       );
     } catch (error) {
       next(error);
