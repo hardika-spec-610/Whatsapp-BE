@@ -13,6 +13,7 @@ import {
 import passport from "passport";
 import googleStrategy from "./lib/auth/googleOauth";
 import userRouter from "./api/users/index";
+import chatRouter from "./api/chats/index";
 import createHttpError from "http-errors";
 
 const expressServer = express();
@@ -46,6 +47,7 @@ expressServer.use(passport.initialize());
 
 // *************************** ENDPOINTS ***************************
 expressServer.use("/users", userRouter);
+expressServer.use("/chat", chatRouter);
 
 // ************************* ERROR HANDLERS ************************
 expressServer.use(badRequestHandler);

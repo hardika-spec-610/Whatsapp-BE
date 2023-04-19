@@ -4,7 +4,7 @@ import ChatModel from "./model";
 
 const chatRouter = express.Router();
 
-chatRouter.post("/chat", async (req, res, next) => {
+chatRouter.post("/", async (req, res, next) => {
   try {
     const { participants } = req.body;
 
@@ -21,7 +21,7 @@ chatRouter.post("/chat", async (req, res, next) => {
   }
 });
 
-chatRouter.post("/chat/:chatId", async (req, res, next) => {
+chatRouter.post("/:chatId", async (req, res, next) => {
   try {
     const { senderId, receiverId, messageText } = req.body;
     const conversationId = req.params.chatId;
