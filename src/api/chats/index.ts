@@ -67,7 +67,7 @@ chatRouter.get("/me", JWTAuthMiddleware, async (req: JwtPayload, res, next) => {
   }
 });
 
-/* chatRouter.get("/me/:userId", async (req: JwtPayload, res, next) => {
+chatRouter.get("/me/:userId", async (req: JwtPayload, res, next) => {
   try {
     const userId = req.params.userId;
 
@@ -82,6 +82,6 @@ chatRouter.get("/me", JWTAuthMiddleware, async (req: JwtPayload, res, next) => {
   } catch (error) {
     next(error);
   }
-}); */
+});
 
 export default chatRouter;
