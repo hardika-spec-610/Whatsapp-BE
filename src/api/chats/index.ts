@@ -52,8 +52,11 @@ chatRouter.post("/:chatId", async (req, res, next) => {
 chatRouter.get("/me", JWTAuthMiddleware, async (req: JwtPayload, res, next) => {
   try {
     const userId = req.req.user?._id;
-    // Find all chats where the user is a participant
-    const chats = await ChatModel.find({ participants: userId });
+    // Find all chats where the user is a participant and populate the receiverAvatar field
+    const chats = await ChatModel.find({ participants: userId }).populate(
+      "receiverAvatar",
+      "avatar"
+    );
     res.json(chats);
   } catch (error) {
     next(error);
