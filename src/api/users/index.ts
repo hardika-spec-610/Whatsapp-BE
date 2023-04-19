@@ -115,6 +115,22 @@ userRouter.put("/me", JWTAuthMiddleware, async (req: JwtPayload, res, next) => {
   }
 });
 
+userRouter.get("/:userId", JWTAuthMiddleware, async (req: JwtPayload, res, next) => {
+  try {
+    const user = await UserModel.findById(req.params.userId);
+
+    if (user) {
+      res.send(user);
+    } else {
+      res.send(
+        createHttpError(404, "Couldn't find User with id: " + req.params.userId)
+      );
+    }
+  } catch (error) {
+    next(error);
+  }
+});
+
 const cloudinaryUploader = multer({
   storage: new CloudinaryStorage({
     cloudinary,
