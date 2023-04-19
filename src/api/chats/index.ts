@@ -1,6 +1,8 @@
 import express from "express";
 import createHttpError from "http-errors";
 import ChatModel from "./model";
+import { JWTAuthMiddleware } from "../../lib/auth/jwt";
+import { JwtPayload } from "jsonwebtoken";
 
 const chatRouter = express.Router();
 
@@ -42,6 +44,17 @@ chatRouter.post("/:chatId", async (req, res, next) => {
       await conversation.save();
       res.status(201);
     }
+  } catch (error) {
+    next(error);
+  }
+});
+
+chatRouter.get("/me", JWTAuthMiddleware, async (req: JwtPayload, res, next) => {
+  try {
+    const userId = req.req.user?._id;
+    // Find all chats where the user is a participant
+    const chats = await ChatModel.find({ participants: userId });
+    res.json(chats);
   } catch (error) {
     next(error);
   }
