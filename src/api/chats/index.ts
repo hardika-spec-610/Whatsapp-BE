@@ -52,15 +52,35 @@ chatRouter.post("/:chatId", async (req, res, next) => {
 chatRouter.get("/me", JWTAuthMiddleware, async (req: JwtPayload, res, next) => {
   try {
     const userId = req.req.user?._id;
-    // Find all chats where the user is a participant and populate the receiverAvatar field
-    const chats = await ChatModel.find({ participants: userId }).populate(
-      "receiverAvatar",
-      "avatar"
-    );
+
+    // Find all chats where the user is a participant and populate the sender and receiver avatars
+    const chats = await ChatModel.find({ participants: userId }).populate({
+      path: "participants",
+      match: { _id: { $ne: userId } }, // find participants other than the current user
+      select: "avatar",
+    });
+
     res.json(chats);
   } catch (error) {
     next(error);
   }
 });
+
+/* chatRouter.get("/me/:userId", async (req: JwtPayload, res, next) => {
+  try {
+    const userId = req.params.userId;
+
+    // Find all chats where the user is a participant and populate the sender and receiver avatars
+    const chats = await ChatModel.find({ participants: userId }).populate({
+      path: "participants",
+      match: { _id: { $ne: userId } }, // find participants other than the current user
+      select: "avatar",
+    });
+
+    res.json(chats);
+  } catch (error) {
+    next(error);
+  }
+}); */
 
 export default chatRouter;
