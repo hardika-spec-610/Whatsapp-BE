@@ -104,10 +104,9 @@ userRouter.get("/me", JWTAuthMiddleware, async (req: JwtPayload, res, next) => {
 
 userRouter.put("/me", JWTAuthMiddleware, async (req: JwtPayload, res, next) => {
   try {
-    console.log("req in put/me:", req.user);
     const updatedUser = await UserModel.findByIdAndUpdate(
       req.user?._id,
-      req.user,
+      req.body,
       { new: true, runValidators: true }
     );
     res.send(updatedUser);
