@@ -14,7 +14,7 @@ chatRouter.post("/", async (req, res, next) => {
     } else {
       // Create a new conversation
       await ChatModel.create({ participants });
-      res.status(201);
+      res.status(201).send({ message: "Conversation created successfully" });
     }
   } catch (error) {
     next(error);
@@ -40,7 +40,7 @@ chatRouter.post("/:chatId", async (req, res, next) => {
     } else {
       conversation.messages.push(message);
       await conversation.save();
-      res.status(201);
+      res.status(201).send({ message: "Message created successfully" });
     }
   } catch (error) {
     next(error);
