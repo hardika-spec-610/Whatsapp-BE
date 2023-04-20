@@ -14,9 +14,17 @@ chatRouter.post("/", async (req, res, next) => {
     if (!participants || participants.length < 2) {
       res.send(createHttpError(400, "Invalid participants"));
     } else {
-      // Create a new conversation
-      await ChatModel.create({ participants });
-      res.status(201).send({ message: "Conversation created successfully" });
+      // Check if a chat with these participants already exists
+      const existingChat = await ChatModel.findOne({ participants });
+
+      if (existingChat) {
+        // Conversation already exists
+        res.status(400).send({ message: "Conversation already exists" });
+      } else {
+        // Create a new conversation
+        await ChatModel.create({ participants });
+        res.status(201).send({ message: "Conversation created successfully" });
+      }
     }
   } catch (error) {
     next(error);
